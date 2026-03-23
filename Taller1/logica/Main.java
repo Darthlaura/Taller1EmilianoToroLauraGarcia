@@ -10,14 +10,19 @@ public class Main {
     public static void main(String[] args) throws Exception{
     String[] listaUsuarios = new String[2];
     String[] listaContrasena = new String[2];
+    int []   listaCantidadHoras = new int[250];
+    String [] listafecha = new String[250];
+    Scanner teclado = new Scanner(System.in);
 
-    
-        Scanner teclado = new Scanner(System.in);
-        try {
+    try {
+        listaCantidadHoras = listaCantidadHoras("Registros.txt");
+        listafecha = listaFecha("Registros.txt");
         guardarUsuarioContra(listaUsuarios, listaContrasena, "Usuarios.txt");
-            
-        } catch (
-             FileNotFoundException e) {
+
+
+
+    }catch (FileNotFoundException e) { 
+    
         }
         boolean salir = false;
         while (!salir) {
@@ -28,10 +33,31 @@ public class Main {
             teclado.nextLine();
 
             if (opcion == 1) {
-                menuUsuarios();
+                menuUsuarios(teclado, listaUsuarios, listaContrasena);
+                int opcionUsuario = opcionMenu(teclado);
+                    if (opcionUsuario == 1) {
+                        abrirArchivo2("Registros.txt");
+                    } else if (opcionUsuario == 2) {
+                        System.out.println("Cual actividad desea modificar? :");
+                        int actividad = teclado.nextInt();
+                        teclado.nextLine();
+                        cambiarElementoLista(listafecha, actividad, teclado);
+                    } else if (opcionUsuario == 3) {
+                        System.out.println("Cual actividad desea eliminar? :");
+                        int actividad = teclado.nextInt();
+                        teclado.nextLine();
+                        cambiarDuracionActividad(listaCantidadHoras, actividad, teclado);
+                    } else if (opcionUsuario == 4) {
+                        cambiarElementoLista(listaUsuarios, opcionUsuario, teclado);
+                    } else if (opcionUsuario == 5) {
+                        salir = true;
+                    }
+                
+
 
             } else if (opcion == 2) {
                 menu_Analisis();
+
             } else if (opcion == 3) {
                 salir = true;
             }
@@ -40,8 +66,36 @@ public class Main {
 
         teclado.close();
     }
+    public static int opcionMenu(Scanner teclado){
+        System.out.println("Que actividad desea realizar? :");
+        int opcion = teclado.nextInt();
+        do{
+           System.out.println("1) Registrar actividad");
+           System.out.println("2) Modificar actividad");
+           System.out.println("3) Eliminar actividad");
+           System.out.println("4) cambiar contraseña");
+           System.out.println("5) Salir");
+           if (opcion <1 || opcion >5) {
+        	   System.out.println("Opcion invalida");
+           }
 
-    private static void guardarUsuarioContra( String[] listaUsuario, String[] listaConstrasena, String nombreArchivo)  throws FileNotFoundException {
+      
+      }while (opcion <1 || opcion >5); 
+
+
+    return opcion;
+    }
+
+
+
+    /**
+     * Metodo que abre el archivo de texto y guarda los usuarios y contraseñas en dos listas diferentes
+     * @param listaUsuario
+     * @param listaContrasena
+     * @param nombreArchivo
+     * @throws FileNotFoundException
+     */
+    private static void guardarUsuarioContra( String[] listaUsuario, String[] listaContrasena, String nombreArchivo)  throws FileNotFoundException {
           File archivo = new File(nombreArchivo);
           Scanner sc = new Scanner(archivo);
            int cont = 0;
@@ -51,7 +105,7 @@ public class Main {
                 if (partes.length == 2) {
                 String usuario = partes[0];
                 String contrasena = partes[1];
-                if ( cont >= listaUsuario.length) {
+                if ( cont < listaUsuario.length) {
                     listaUsuario[cont]= usuario;
                     listaContrasena[cont] = contrasena;
                 }
@@ -60,13 +114,23 @@ public class Main {
             }
             sc.close();
     }
-
-    private static void menu_Usuarios(Scanner teclado) {
-        Scanner dato = new Scanner(System.in);
+    /**
+     * Metodo que muestra el menu de usuarios y permite ingresar un usuario y contraseña para acceder al sistema
+     * @param teclado
+     * @param listaUsuario
+     * @param listaContrasena
+     */
+    private static void menuUsuarios(Scanner teclado, String[] listaUsuario, String[] listaContrasena) {
         System.out.println("Usuario :");
-        String usuario = dato.nextLine();
+        String usuario = teclado.nextLine();
         System.out.println("Contraseña :");  
-        String contraseña = dato.nextLine();
+        String contraseña = teclado.nextLine();
+            if (usuario.equals(listaUsuario[0]) && contraseña.equals(listaContrasena[0]) || usuario.equals(listaUsuario[1]) && contraseña.equals(listaContrasena[1])) {
+                System.out.println("Acceso correcto " + usuario);
+            } else {
+                System.out.println("Usuario o contraseña incorrectos");
+            }
+
 
         
 
