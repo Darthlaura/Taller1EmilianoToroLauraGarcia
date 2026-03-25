@@ -1,8 +1,11 @@
 package logica;
 
+<<<<<<< Updated upstream
 import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
+=======
+>>>>>>> Stashed changes
 
 public class Main {
 
