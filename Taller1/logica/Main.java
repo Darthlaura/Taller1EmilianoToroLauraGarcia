@@ -41,7 +41,7 @@ public class Main {
             if (opcion == 1) {
                 int indiceUsuario = menuUsuarios(teclado, listaUsuarios, listaContrasena); // retorna el indice del
                                                                                            // usuario en la lista de
-                                                                                           // usuarios y contraseñas,
+                                                                             // usuarios y contraseñas,
                 // o -1 si no encuentra al usuario o la contraseña es incorrecta
 
                 if (indiceUsuario != -1) {
@@ -85,7 +85,7 @@ public class Main {
                 }
 
             } else if (opcion == 2) {
-                menu_Analisis();
+                menu_Analisis(listaActividad);
 
             } else if (opcion == 3) {
                 salir = true;
@@ -176,9 +176,43 @@ public class Main {
         return -1; // retorna -1 si no encuentra al usuario o la contraseña es incorrecta
     }
 
-    private static void menu_Analisis() {
+    private static void menu_Analisis(String[] listaActividad) {
+        System.out.println("Bienvenido al menu de analisis!");
+        Scanner teclado = new Scanner(System.in);
+        System.out.println("");
+        System.out.println("Que deseas realizar?");
+        System.out.println("");
+        System.out.println("1) Actividad más realizada");
+        System.out.println("2) Actividad más realizada por cada usuario");
+        System.out.println("3) Usuario con mayor procastinacion");
+        System.out.println("4) Ver todas las actividades");
+        System.out.println("5) Salir");
+
+        int opcion = Integer.parseInt(teclado.nextLine());
+        // verificación de errores
+        while (opcion < 1 || opcion > 5) {
+            System.out.println("Opcion invalida, ingrese una opcion valida: ");
+            opcion = Integer.parseInt(teclado.nextLine());
+        }
+        if (opcion == 1) {
+            Analisis.actividadMasRealizada(listaActividad);
+        } else if (opcion == 2) {
+            Analisis.actividadMasRealizadaPorUsuario(listaNombreRegistro, listaActividad, cantidadRegistros);
+        } else if (opcion == 3) {
+            Analisis.usuarioMayorProcastinacion(listaNombreRegistro, listaCantidadHoras, cantidadRegistros);
+        } else if (opcion == 4) {
+            Analisis.verTodasActividades(listaNombreRegistro, listaFecha, listaCantidadHoras, listaActividad,
+                    cantidadRegistros);
+
+        }
+    
+
+
 
     }
+
+    private static void actividadMasRealizada
+
 
     /**
      * metodo que abre el archivo Registros.txt, lee cada linea separa por partes e
