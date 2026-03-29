@@ -211,7 +211,14 @@ public class Main {
 
     }
 
-    private static void actividadMasRealizada
+    private static void actividadMasRealizada(String[] listaActividad) {
+        for(int i=0; i<listaActividad.length; i++){
+            
+
+
+        }
+\
+    }
 
 
     /**
@@ -234,7 +241,7 @@ public class Main {
                 String nombreUsuario = partes[0];
                 String fechas = partes[1];
                 int CantidadHoras = Integer.parseInt(partes[2]);
-                String actividad = partes[3];
+                String actividad = partes[3];   
                 System.out.println(
                         "nombre de usuario: " + nombreUsuario + "Fecha: " + fechas + "cantidad de horas invertidas: "
                                 + CantidadHoras + "actividad: " + actividad);
