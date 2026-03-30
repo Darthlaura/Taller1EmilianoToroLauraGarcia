@@ -195,7 +195,7 @@ public class Main {
             opcion = Integer.parseInt(teclado.nextLine());
         }
         if (opcion == 1) {
-            Analisis.actividadMasRealizada(listaActividad);
+            Analisis.actividadMasRealizada();
         } else if (opcion == 2) {
             Analisis.actividadMasRealizadaPorUsuario(listaNombreRegistro, listaActividad, cantidadRegistros);
         } else if (opcion == 3) {
@@ -211,12 +211,11 @@ public class Main {
 
     }
 
-    private static void actividadMasRealizada(String[] listaActividad) {
-        for(int i=0; i<listaActividad.length; i++){
-            
+    private static void actividadMasRealizada() {
+        Scanner arch = new Scanner(new File("Registros.txt"));
+        
 
-
-        }
+  
 \
     }
 
