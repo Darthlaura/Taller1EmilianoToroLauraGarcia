@@ -176,7 +176,7 @@ public class Main {
         return -1; // retorna -1 si no encuentra al usuario o la contraseña es incorrecta
     }
 
-    private static void menu_Analisis(String[] listaActividad) {
+    private static void menu_Analisis(String[] listaActividad) throws Exception {
         System.out.println("Bienvenido al menu de analisis!");
         Scanner teclado = new Scanner(System.in);
         System.out.println("");
@@ -195,14 +195,13 @@ public class Main {
             opcion = Integer.parseInt(teclado.nextLine());
         }
         if (opcion == 1) {
-            Analisis.actividadMasRealizada();
+            actividadMasRealizada();
         } else if (opcion == 2) {
-            Analisis.actividadMasRealizadaPorUsuario(listaNombreRegistro, listaActividad, cantidadRegistros);
+            actividadMasRealizadaPorUsuario();
         } else if (opcion == 3) {
-            Analisis.usuarioMayorProcastinacion(listaNombreRegistro, listaCantidadHoras, cantidadRegistros);
+        //    usuarioMayorProcastinacion();
         } else if (opcion == 4) {
-            Analisis.verTodasActividades(listaNombreRegistro, listaFecha, listaCantidadHoras, listaActividad,
-                    cantidadRegistros);
+           // verTodasActividades();
 
         }
     
@@ -211,12 +210,130 @@ public class Main {
 
     }
 
-    private static void actividadMasRealizada() {
+    private static String[] obtenerUsuarios() throws Exception {
         Scanner arch = new Scanner(new File("Registros.txt"));
-        
+        String[] usuarios = new String[100];
+        int totalUsuarios = 0;
 
-  
-\
+        while (arch.hasNextLine()) {
+            String linea = arch.nextLine();
+            String[] partes = linea.split(";");
+            String usuario = partes[0];
+
+            boolean encontrado = false;
+            for (int i = 0; i < totalUsuarios; i++) {
+                if (usuarios[i].equals(usuario)) {
+                    encontrado = true;
+                    break;
+                }
+            }
+            if (!encontrado) {
+                usuarios[totalUsuarios] = usuario;
+                totalUsuarios++;
+            }
+        }
+        arch.close();
+        return usuarios;
+    }
+
+    private static String[][] obtenerRegistrosDeUsuario(String usuario) throws Exception {
+        Scanner arch = new Scanner(new File("Registros.txt"));
+        String[][] registros = new String[200][4];
+        int total = 0;
+
+        while (arch.hasNextLine()) {
+            String linea = arch.nextLine();
+            String[] partes = linea.split(";");
+            if (partes[0].equals(usuario)) {
+                registros[total] = partes;
+                total++;
+            }
+        }
+        arch.close();
+        return registros;
+    }
+
+    private static void actividadMasRealizadaPorUsuario() throws Exception {
+        String[] usuarios = obtenerUsuarios();
+
+        System.out.println("Actividades mas realizadas por cada usuario:");
+
+        for (int u = 0; u < usuarios.length && usuarios[u] != null; u++) {
+            String[][] registros = obtenerRegistrosDeUsuario(usuarios[u]);
+
+            String[] actividades = new String[100];
+            int[] horas = new int[100];
+            int totalActividades = 0;
+
+            for (int r = 0; r < registros.length && registros[r][0] != null; r++) {
+                int hora         = Integer.parseInt(registros[r][2]);
+                String actividad = registros[r][3];
+
+                boolean encontrada = false;
+                for (int i = 0; i < totalActividades; i++) {
+                    if (actividades[i].equals(actividad)) {
+                        horas[i] += hora;
+                        encontrada = true;
+                        break;
+                    }
+                }
+                if (!encontrada) {
+                    actividades[totalActividades] = actividad;
+                    horas[totalActividades] = hora;
+                    totalActividades++;
+                }
+            }
+
+            int datoMaximo = 0;
+            for (int i = 1; i < totalActividades; i++) {
+                if (horas[i] > horas[datoMaximo]) {
+                	datoMaximo = i;
+                }
+            }
+
+            System.out.println("* " + usuarios[u] + " -> " + actividades[datoMaximo] + " -> con " + horas[datoMaximo] + " horas registradas");
+        }
+    }
+
+	private static void actividadMasRealizada() throws Exception {
+        Scanner arch = new Scanner(new File("Registros.txt"));
+
+        String[] actividades = new String[100];
+        int[] conteo = new int[100];
+        int totalActividades = 0;
+
+        while (arch.hasNextLine()) {
+            String linea = arch.nextLine();
+            String[] partes = linea.split(";");
+            String actividad = partes[3];
+
+            // Buscamos si esta ya existia
+            boolean encontrada = false;
+            for (int i = 0; i < totalActividades; i++) {
+                if (actividades[i].equals(actividad)) {
+                    conteo[i]++;
+                    encontrada = true;
+                    break;
+                }
+            }
+
+            if (!encontrada) {
+                actividades[totalActividades] = actividad;
+                conteo[totalActividades] = 1;
+                totalActividades++;
+            }
+        }
+
+        arch.close();
+
+        // Buscamos el dato maximo
+        int datoMaximo = 0;
+        for (int i = 1; i < totalActividades; i++) {
+            if (conteo[i] > conteo[datoMaximo]) {
+            	datoMaximo = i;
+            }
+        }
+        System.out.println("Actividad más realizada: " + actividades[datoMaximo] + " (" + conteo[datoMaximo] + " veces)");
     }
 
 
