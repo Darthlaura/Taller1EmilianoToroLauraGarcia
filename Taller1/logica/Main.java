@@ -1,3 +1,8 @@
+//Autores: Emiliano Toro - Laura Garcia
+//rut: 21512702-8 - 26427429-k
+//carrera: ITI 
+//Parelelo: C2
+
 package logica;
 
 import java.util.Scanner;
@@ -39,9 +44,8 @@ public class Main {
             int opcion = Integer.parseInt(teclado.nextLine());
 
             if (opcion == 1) {
-                int indiceUsuario = menuUsuarios(teclado, listaUsuarios, listaContrasena); // retorna el indice del
-                                                                                           // usuario en la lista de
-                                                                             // usuarios y contraseñas,
+                int indiceUsuario = menuUsuarios(teclado, listaUsuarios, listaContrasena);
+                // retorna el indice del usuario en la lista de usuarios y contraseñas,
                 // o -1 si no encuentra al usuario o la contraseña es incorrecta
 
                 if (indiceUsuario != -1) {
@@ -85,7 +89,7 @@ public class Main {
                 }
 
             } else if (opcion == 2) {
-                menu_Analisis(listaActividad);
+                menuAnalisis(listaActividad);
 
             } else if (opcion == 3) {
                 salir = true;
@@ -108,14 +112,32 @@ public class Main {
      */
     public static int opcionMenu(Scanner teclado) {
 
-        System.out.println("1) Registrar actividad");
-        System.out.println("2) Modificar actividad");
-        System.out.println("3) Eliminar actividad");
-        System.out.println("4) cambiar contraseña");
-        System.out.println("5) Salir");
-        System.out.println("Que actividad desea realizar? :");
-        int opcion = Integer.parseInt(teclado.nextLine());
+        boolean continuar = false;
+        int opcion = 0;
 
+        while (!continuar) {
+            System.out.println("1) Registrar actividad");
+            System.out.println("2) Modificar actividad");
+            System.out.println("3) Eliminar actividad");
+            System.out.println("4) cambiar contraseña");
+            System.out.println("5) Salir");
+            System.out.println("Que actividad desea realizar? :");
+
+            try {
+                opcion = Integer.valueOf(teclado.nextLine());
+
+                if (opcion >= 1 && opcion <= 5) {
+                    continuar = true;
+                }
+
+                else {
+                    System.out.println("Numeros fuera del rango ");
+                }
+
+            } catch (IllegalArgumentException e) {
+                System.out.println("Opcion invalida, ingrese una opcion valida: ");
+            }
+        }
         return opcion;
     }
 
@@ -176,7 +198,13 @@ public class Main {
         return -1; // retorna -1 si no encuentra al usuario o la contraseña es incorrecta
     }
 
-    private static void menu_Analisis(String[] listaActividad) throws Exception {
+    /**
+     * metodo que muestra el menu de analisis
+     * 
+     * @param listaActividad
+     * @throws Exception
+     */
+    private static void menuAnalisis(String[] listaActividad) throws Exception {
         System.out.println("Bienvenido al menu de analisis!");
         Scanner teclado = new Scanner(System.in);
         System.out.println("");
@@ -194,6 +222,7 @@ public class Main {
             System.out.println("Opcion invalida, ingrese una opcion valida: ");
             opcion = Integer.parseInt(teclado.nextLine());
         }
+        teclado.close();
         if (opcion == 1) {
             actividadMasRealizada();
         } else if (opcion == 2) {
@@ -204,16 +233,18 @@ public class Main {
             verTodasActividades();
 
         } else if (opcion == 5) {
-        	return;
+            return;
         }
-    
+
     }
 
-
-
-
-    //esta funcion es especificamente para obtener los usuarios
-	private static String[] obtenerUsuarios() throws Exception {
+    /**
+     * metodo que abre el archivo Registros.txt, lee cada linea, separa por partes y
+     * 
+     * @return
+     * @throws Exception
+     */
+    private static String[] obtenerUsuarios() throws Exception {
         Scanner arch = new Scanner(new File("Registros.txt"));
         String[] usuarios = new String[100];
         int totalUsuarios = 0;
@@ -238,8 +269,14 @@ public class Main {
         arch.close();
         return usuarios;
     }
-	
-	//esta funcion la utilizamos para guardar los registros en una lista y usarlos en actividadMasRealizadaPorUsuario
+
+    /**
+     * metodo que abre el archivo txt de registros
+     * 
+     * @param usuario
+     * @return
+     * @throws Exception
+     */
     private static String[][] obtenerRegistrosDeUsuario(String usuario) throws Exception {
         Scanner arch = new Scanner(new File("Registros.txt"));
         String[][] registros = new String[200][4];
@@ -257,23 +294,30 @@ public class Main {
         return registros;
     }
 
+    /**
+     * metodo que muestra la actividad mas realizada por cada usuario returnando un
+     * void
+     * 
+     * @throws Exception
+     */
     private static void actividadMasRealizadaPorUsuario() throws Exception {
         String[] usuarios = obtenerUsuarios();
 
         System.out.println("Actividades mas realizadas por cada usuario:");
-        //usamos ciclos para verificar las actividades por usuario, el ciclo seguira hasta que no haya ningun usuario valido
+        // usamos ciclos para verificar las actividades por usuario, el ciclo seguira
+        // hasta que no haya ningun usuario valido
         for (int u = 0; u < usuarios.length && usuarios[u] != null; u++) {
             String[][] registros = obtenerRegistrosDeUsuario(usuarios[u]);
 
             String[] actividades = new String[100];
             int[] horas = new int[100];
             int totalActividades = 0;
-            //aqui usamos matrices para que nos sea mass facil registrar las actividades
+            // aqui usamos matrices para que nos sea mass facil registrar las actividades
             for (int r = 0; r < registros.length && registros[r][0] != null; r++) {
-                int hora         = Integer.parseInt(registros[r][2]);
+                int hora = Integer.parseInt(registros[r][2]);
                 String actividad = registros[r][3];
 
-                //tenemos booleanos para saber si encontramos las mismas actividades
+                // tenemos booleanos para saber si encontramos las mismas actividades
                 boolean encontrada = false;
                 for (int i = 0; i < totalActividades; i++) {
                     if (actividades[i].equals(actividad)) {
@@ -282,38 +326,46 @@ public class Main {
                         break;
                     }
                 }
-                //si encontramos el dato  lo guardamos
+                // si encontramos el dato lo guardamos
                 if (!encontrada) {
                     actividades[totalActividades] = actividad;
                     horas[totalActividades] = hora;
                     totalActividades++;
                 }
             }
-            	//aqui tratamos de encontrar la actividad mas realizada usando datos maximos
+            // aqui tratamos de encontrar la actividad mas realizada usando datos maximos
             int datoMaximo = 0;
             for (int i = 1; i < totalActividades; i++) {
                 if (horas[i] > horas[datoMaximo]) {
-                	datoMaximo = i;
+                    datoMaximo = i;
                 }
             }
 
-            System.out.println("* " + usuarios[u] + " -> " + actividades[datoMaximo] + " -> con " + horas[datoMaximo] + " horas registradas");
+            System.out.println("* " + usuarios[u] + " -> " + actividades[datoMaximo] + " -> con " + horas[datoMaximo]
+                    + " horas registradas");
         }
     }
 
-	private static void actividadMasRealizada() throws Exception {
+    /**
+     * metodo que abre el archivo Registros.txt, lee cada linea, separa por partes y
+     * busca la actividad mas realizada
+     * 
+     * @throws Exception
+     */
+    private static void actividadMasRealizada() throws Exception {
         Scanner arch = new Scanner(new File("Registros.txt"));
-        //hacemos listas para poder guardar lo necesario
+        // hacemos listas para poder guardar lo necesario
         String[] actividades = new String[100];
         int[] conteo = new int[100];
         int totalActividades = 0;
-        //empezamos el ciclo para poder leer el archivo
+        // empezamos el ciclo para poder leer el archivo
         while (arch.hasNextLine()) {
             String linea = arch.nextLine();
             String[] partes = linea.split(";");
             String actividad = partes[3];
 
-            //usamos booleano para verificar si encontramos una actividad en especifico asi encontramos la mas realizzada
+            // usamos booleano para verificar si encontramos una actividad en especifico asi
+            // encontramos la mas realizzada
             boolean encontrada = false;
             for (int i = 0; i < totalActividades; i++) {
                 if (actividades[i].equals(actividad)) {
@@ -322,7 +374,7 @@ public class Main {
                     break;
                 }
             }
-            //si la encontramos aumentamos su conteo
+            // si la encontramos aumentamos su conteo
             if (!encontrada) {
                 actividades[totalActividades] = actividad;
                 conteo[totalActividades] = 1;
@@ -336,39 +388,53 @@ public class Main {
         int datoMaximo = 0;
         for (int i = 1; i < totalActividades; i++) {
             if (conteo[i] > conteo[datoMaximo]) {
-            	datoMaximo = i;
+                datoMaximo = i;
             }
         }
-        System.out.println("Actividad más realizada: " + actividades[datoMaximo] + " (" + conteo[datoMaximo] + " veces)");
+        System.out
+                .println("Actividad más realizada: " + actividades[datoMaximo] + " (" + conteo[datoMaximo] + " veces)");
     }
 
+    /**
+     * metodo que para obtiene los registros y los usuarios para analizar cual
+     * usuario tiene mas horas de procrastinacion
+     * 
+     * @throws Exception
+     */
     private static void usuarioMayorProcrastinacion() throws Exception {
-    	//usamos funciones para obtener los registros y los usuarios
-        String[] registros = obtenerRegistros();
-        String[] usuarios  = obtenerUsuarios();
 
-        String usuarioTop = null; //le asignamos null para poder despues remplazarlo 
+        String[] registros = obtenerRegistros();
+        String[] usuarios = obtenerUsuarios();
+
+        String usuarioTop = null; // le asignamos null para poder despues remplazarlo
         int maxHora = 0;
-        
+
         for (int u = 0; u < usuarios.length && usuarios[u] != null; u++) {
             int horasUsuario = 0;
-            //usamos ciclos for para encontrar al usuario que mas procrastino
+            // usamos ciclos for para encontrar al usuario que mas procrastino
             for (int r = 0; r < registros.length && registros[r] != null; r++) {
                 String[] partes = registros[r].split(";");
                 if (partes[0].equals(usuarios[u])) {
                     horasUsuario += Integer.parseInt(partes[2]);
                 }
             }
-            //confirmamos los datos maximos
+            // confirmamos los datos maximos
             if (horasUsuario > maxHora) {
-                maxHora   = horasUsuario;
+                maxHora = horasUsuario;
                 usuarioTop = usuarios[u];
             }
         }
 
-        System.out.println("Usuario con mayor procrastinacion: " + usuarioTop + " con " + maxHora + " horas registradas");
+        System.out
+                .println("Usuario con mayor procrastinacion: " + usuarioTop + " con " + maxHora + " horas registradas");
     }
-    
+
+    /**
+     * metodo que abre el archivo Registros.txt e imprime los registros
+     * 
+     * @return
+     * @throws Exception
+     */
     private static String[] obtenerRegistros() throws Exception {
         Scanner arch = new Scanner(new File("Registros.txt"));
         String[] registros = new String[500];
@@ -381,15 +447,16 @@ public class Main {
         arch.close();
         return registros;
     }
-    
-    //aqui simplemente imprimimos todos los registros existentes
+
+    // aqui simplemente imprimimos todos los registros existentes
     private static void verTodasActividades() throws Exception {
         String[] registros = obtenerRegistros();
         System.out.println("Todos los registros existentes: ");
 
         for (int i = 0; i < registros.length && registros[i] != null; i++) {
             String[] partes = registros[i].split(";");
-            System.out.println("Usuario: " + partes[0] + " | Fecha: " + partes[1] + " | Horas: " + partes[2] + " | Actividad: " + partes[3]);
+            System.out.println("Usuario: " + partes[0] + " | Fecha: " + partes[1] + " | Horas: " + partes[2]
+                    + " | Actividad: " + partes[3]);
         }
     }
 
@@ -413,7 +480,7 @@ public class Main {
                 String nombreUsuario = partes[0];
                 String fechas = partes[1];
                 int CantidadHoras = Integer.parseInt(partes[2]);
-                String actividad = partes[3];   
+                String actividad = partes[3];
                 System.out.println(
                         "nombre de usuario: " + nombreUsuario + "Fecha: " + fechas + "cantidad de horas invertidas: "
                                 + CantidadHoras + "actividad: " + actividad);
@@ -584,7 +651,7 @@ public class Main {
         }
         int indice = opcionUsuario - 1;
 
-        if (opcionUsuario > 0 || opcionUsuario >= listaInt.length) {
+        if (opcionUsuario < 0 || opcionUsuario >= listaInt.length) {
             System.out.println("Opcion invalida");
             return listaInt;
         }
@@ -637,9 +704,7 @@ public class Main {
     public static int registrarActividad(String[] listaNombreRegistro, String[] listaFecha, int[] listaCantidadHoras,
             String[] listaActividad, int cantidadRegistros, String usuarioActual, Scanner teclado) {
 
-        if (cantidadRegistros >= listaActividad.length) { // si la cantidad de registro es mayor o igual a la longitud
-                                                          // de la lista de actividades no se pueden registrar más
-                                                          // actividades
+        if (cantidadRegistros >= listaActividad.length) {
             System.out.println("No se pueden registrar más actividades. Capacidad máxima alcanzada.");
             return cantidadRegistros;
         }
